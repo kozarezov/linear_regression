@@ -1,10 +1,10 @@
-import time
 import utils as util
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
 INPUT = "data.csv"
+OUTPUT = "result.txt"
 
 # Чтение массива
 try:
@@ -12,7 +12,7 @@ try:
 except Exception as e:
     exit(e)
 
-# Инициализация X и Y
+# Сбор данных из файла
 X = data.iloc[0:len(data), 0]
 Y = data.iloc[0:len(data), 1]
 
@@ -22,8 +22,8 @@ y = util.normalizeData(Y)
 
 # Инициализация переменных
 m = len(X) # Количество наблюдений
-theta0 = 0
-theta1 = 0
+theta0 = 0 # Коэффициент смещения
+theta1 = 0 # Коэффициент наклона
 learning_rate = 0.1 # Размер шага
 iterations = 1000 # Количество итераций
 
@@ -63,9 +63,15 @@ def gradient_descent():
         tmp_theta1 = tmp_theta1 - (learning_rate * (sum2 / m))
     return [tmp_theta0, tmp_theta1]
 
+# Вывод итога на экран
 [theta0, theta1] = gradient_descent()
-
 [lx, ly] = predicting_line(X, Y, theta1, theta0, 1000)
 axes.plot(lx, ly, color='red')
 axes.text(X.min(), Y.min(), str(iterations), color = 'blue')
 plt.show()
+
+# Запись итога в файл
+with open(OUTPUT, 'w') as f:
+    f.write(str(theta0))
+    f.write("\n")
+    f.write(str(theta1))
