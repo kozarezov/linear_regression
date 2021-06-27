@@ -3,12 +3,15 @@ import pandas as pd
 
 INPUT = "data.csv"
 OUTPUT = "result.txt"
-
+2
 # Чтение массива
 try:
     data = pd.read_csv(INPUT, delimiter=",", dtype="float")
 except Exception as e:
     exit(e)
+
+theta0 = 0
+theta1 = 0
 
 # Сбор данных из файла
 X = data.iloc[0:len(data), 0]
@@ -19,7 +22,7 @@ str = input(message)
 
 # Рассчет цены
 try:
-	value = util.normalize(X, float(str))
+	value = float(str)
 except Exception as e:
     exit(e)
 
@@ -28,14 +31,21 @@ try:
     theta0 = float(f.readline())
     theta1 = float(f.readline())
 except Exception as e:
-	exit(e)
+    theta0 = 0
+    theta1 = 0
+
+if value < 0:
+    exit("Невозможно спрогнозировать")
+else:
+    value = util.normalize(X, value)
 
 cost = theta1 * value + theta0
-cost = util.denormalize(Y, cost)
+if (cost > 0):
+    cost = util.denormalize(Y, cost)
 
 # Вывод цены
-if (value > 0 and cost > 0):
-	print ("Прогнозная цена:")
-	print (round(cost, 3))
+if (cost < 0):
+    print ("Невозможно спрогнозировать")
 else:
-	print ("Невозможно спрогнозировать")
+    print ("Прогнозная цена:")
+    print (round(cost, 3))
